@@ -1,0 +1,10 @@
+name: "/web/v1"
+endpoints:
+  - url: /example
+    methods:
+      - method: POST
+        destination:
+          name: example
+          host: http://example-service
+          url: /endpoint
+
