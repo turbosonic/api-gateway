@@ -6,10 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/turbosonic/golddust/authenication"
-	"github.com/turbosonic/golddust/configurations"
-	"github.com/turbosonic/golddust/relay"
-	"github.com/turbosonic/golddust/responseMarshal"
+	"github.com/turbosonic/api-gateway/authenication"
+	"github.com/turbosonic/api-gateway/configurations"
+	"github.com/turbosonic/api-gateway/relay"
+	"github.com/turbosonic/api-gateway/responseMarshal"
 
 	goji "goji.io"
 	"goji.io/pat"
