@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/turbosonic/api-gateway/parammap"
+
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/relay"
 	goji "goji.io"
@@ -27,15 +29,17 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 	for _, m := range endpoint.Methods {
 		var p *pat.Pattern
 
+		ep := configName + endpoint.URL
+
 		switch m.Method {
 		case "GET":
-			p = pat.Get(configName + endpoint.URL)
+			p = pat.Get(ep)
 		case "POST":
-			p = pat.Post(configName + endpoint.URL)
+			p = pat.Post(ep)
 		case "PUT":
-			p = pat.Put(configName + endpoint.URL)
+			p = pat.Put(ep)
 		case "DELETE":
-			p = pat.Delete(configName + endpoint.URL)
+			p = pat.Delete(ep)
 		default:
 			log.Println("Couldn't add method: %s", m)
 			panic("Invalid method in configuration")
@@ -44,8 +48,13 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 		mux.HandleFunc(p, func(w http.ResponseWriter, r *http.Request) {
 			// TODO: authorization
 
-			// append query string
+			// substitute parameters
 			destinationURL := m.Destination.URL
+			for p, v := range parammap.GetParams(ep, r) {
+				destinationURL = strings.Replace(destinationURL, p, v, 1)
+			}
+
+			// append query string
 			if r.URL.RawQuery != "" {
 				destinationURL = destinationURL + "?" + r.URL.RawQuery
 			}
