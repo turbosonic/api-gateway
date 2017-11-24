@@ -43,12 +43,6 @@ This is just standard docker stuff:
 ## Things to come
 This is the start of a journey to create a simple, secure, scalable and production ready api-gateway, to allow developers to focus on the core functionality of their systems, below is a list of things to be added in the coming months.
 
-### Known issues
-This is all very new, so some things aren't quite working yet
-* **Parameter handling** - dynamic parts of URLs (like IDs) need to be handled and sent to destination services
-* **Query string handling** - everything from `?` onwards from the request url needs to be sent on to the destination service
-* **False 200s** - at the moment, if you get your destination wrong, a 404 is not sent back to the client, rubbish, sorry
-
 ### Coming soon...
 
 * **Authentication** - it would be pretty useless if a gateway didn't keep out the bad guys
