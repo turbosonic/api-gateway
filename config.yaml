@@ -7,4 +7,13 @@ endpoints:
           name: example
           host: http://example-service
           url: /endpoint
+  - url: /example/:id
+    methods:
+      - method: GET
+        destination:
+          name: example
+          host: http://example-service
+          url: /endpoint/:id
+
+
 
