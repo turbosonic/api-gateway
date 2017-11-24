@@ -2,7 +2,7 @@ name: "/web/v1"
 endpoints:
   - url: /example
     methods:
-      - method: POST
+      - method: GET
         destination:
           name: example
           host: http://example-service
