@@ -42,10 +42,16 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 		}
 
 		mux.HandleFunc(p, func(w http.ResponseWriter, r *http.Request) {
-			// authorization
+			// TODO: authorization
+
+			// append query string
+			destinationURL := m.Destination.URL
+			if r.URL.RawQuery != "" {
+				destinationURL = destinationURL + "?" + r.URL.RawQuery
+			}
 
 			request := relay.RelayRequest{}
-			request.URL = m.Destination.Host + m.Destination.URL
+			request.URL = m.Destination.Host + destinationURL
 			request.Method = m.Method
 
 			resp, err := rel.MakeRequest(request)
