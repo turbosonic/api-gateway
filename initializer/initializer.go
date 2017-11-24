@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/relay"
@@ -49,6 +50,8 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 
 			resp, err := rel.MakeRequest(request)
 			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				io.Copy(w, strings.NewReader("404 page not found"))
 				return
 			}
 
