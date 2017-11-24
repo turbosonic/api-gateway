@@ -1,12 +1,12 @@
 # Turbosonic: api-gateway
-A lightweight, sub-milisecond api-gateway intended for microservices on docker
+A lightweight, sub-millisecond api-gateway intended for microservices on docker
 
 ## What does it do?
 Acts as the conduit between the outside world and your internal microservice ecosystem, using a simple yaml configuration file you can set up your routing to take external requests and forward them on to internal endpoints.
 
 ## Getting started
 ### Create a configuration file
-You need to create a configuration yaml file to be used when the api gateway first starts, full details are in the wiki, but here's a starter for 10 (it's the same as `config.yaml` on this project's root).
+You need to create a configuration yaml file to be used when the API gateway first starts, full details are in the wiki, but here's a starter for 10 (it's the same as `config.yaml` on this project's root).
 
 ```yaml
 name: /web/v1 
@@ -37,7 +37,7 @@ This is just standard docker stuff:
 * `-p {external port}:8080` will expose the gateway to the port you add
 * `--name {a nice name}` gives the container a nice name
 * `-net {name of docker network}` the name of the docker network (created in the last step)
-* `-v {path to yaml file}:/config.yaml` mounts your config file in to the container to be used
+* `-v {path to yaml file}:/config.yaml` mounts your config file into the container to be used
 * `turbosonic/api-gateway` is the name of the image on docker hub
 
 ## Things to come
@@ -45,17 +45,17 @@ This is the start of a journey to create a simple, secure, scalable and producti
 
 ### Known issues
 This is all very new, so some things aren't quite working yet
-* **Parameter handling** - dynamic parts of URLs (like IDs) need to be handled and sent to desitnation services
-* **Query string handling** - everything from `?` onwards on the url needs to be sent on to the desitnation service
+* **Parameter handling** - dynamic parts of URLs (like IDs) need to be handled and sent to destination services
+* **Query string handling** - everything from `?` onwards from the request url needs to be sent on to the destination service
 * **False 200s** - at the moment, if you get your destination wrong, a 404 is not sent back to the client, rubbish, sorry
 
 ### Coming soon...
 
 * **Authentication** - it would be pretty useless if a gateway didn't keep out the bad guys
 * **Authorization**  - limit access to certain endpoints based on the claims of the user accessing it
-* **Request bundling** - collate multiple internal requests in to one external request, improving latency for devices with shoddy internet connections
-* **Multiple configurations** - so you can have `/web/v2` and `/mobile/v1` etc, running simlutaneously
-* **Caching** - hold responses in memory for ultra fast response times
+* **Request bundling** - collate multiple internal requests into one external request, improving latency for devices with shoddy internet connections
+* **Multiple configurations** - so you can have `/web/v2` and `/mobile/v1` etc, running simultaneously
+* **Caching** - hold responses in memory for ultra-fast response times
 * **Mocking** - return mocked data for fast prototyping and concurrent development of front and back end
 * **Rate limiting** - Protect your internal endpoints by adding a forcefield when users start spamming you
 * **Retries** - If at first you don't succeed; try, try again
