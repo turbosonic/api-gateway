@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/turbosonic/api-gateway/authenication"
+	"github.com/turbosonic/api-gateway/authentication"
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/relay"
 	"github.com/turbosonic/api-gateway/responseMarshal"
