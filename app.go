@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	if *configFile == "" {
-		panic("No config file provided")
+		*configFile = "config.yaml"
 	}
 
 	// get all of the endpoints
