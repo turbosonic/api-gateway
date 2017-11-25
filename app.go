@@ -8,6 +8,7 @@ import (
 	"github.com/turbosonic/api-gateway/authentication"
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/initializer"
+	"github.com/turbosonic/api-gateway/logging"
 	"github.com/turbosonic/api-gateway/responseMarshal"
 
 	goji "goji.io"
@@ -39,6 +40,10 @@ func main() {
 
 	// add response marshaling
 	mux.Use(responseMarshal.AddHeaders)
+
+	// add response logging
+	logHandler := logging.New()
+	mux.Use(logHandler.LogHandlerFunc)
 
 	// Register the endpoints
 	initializer.RegisterEndpoints(mux, config)
