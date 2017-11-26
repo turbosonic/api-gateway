@@ -45,11 +45,14 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 			panic("Invalid method in configuration")
 		}
 
+		// move the method to a new variable
+		d := m
+
 		mux.HandleFunc(p, func(w http.ResponseWriter, r *http.Request) {
 			// TODO: authorization
 
 			// substitute parameters
-			destinationURL := m.Destination.URL
+			destinationURL := d.Destination.URL
 			for p, v := range parammap.GetParams(ep, r) {
 				destinationURL = strings.Replace(destinationURL, p, v, 1)
 			}
@@ -60,8 +63,8 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 			}
 
 			request := relay.RelayRequest{}
-			request.URL = m.Destination.Host + destinationURL
-			request.Method = m.Method
+			request.URL = d.Destination.Host + destinationURL
+			request.Method = d.Method
 
 			resp, err := rel.MakeRequest(request)
 			if err != nil {
