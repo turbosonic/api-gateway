@@ -28,9 +28,7 @@ func (relay Relay) MakeRequest(r RelayRequest) (resp *http.Response, err error) 
 		return nil, err
 	}
 
-	for k, v := range r.Headers {
-		req.Header.Add(k, v)
-	}
+	req.Header = r.Header
 
 	resp, err = relay.client.Do(req)
 	if err != nil {
@@ -41,8 +39,8 @@ func (relay Relay) MakeRequest(r RelayRequest) (resp *http.Response, err error) 
 }
 
 type RelayRequest struct {
-	URL     string
-	Method  string
-	Headers map[string]string
-	Body    []byte
+	URL    string
+	Method string
+	Header http.Header
+	Body   []byte
 }
