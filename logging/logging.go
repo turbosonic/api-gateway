@@ -2,6 +2,7 @@ package logging
 
 import (
 	"net/http"
+	"runtime"
 	"time"
 )
 
@@ -14,12 +15,20 @@ type LogHandler struct {
 }
 
 type Log struct {
-	Date       time.Time `json:"date"`
-	RequestID  string    `json:"request_id"`
-	URL        string    `json:"url"`
-	Method     string    `json:"method"`
-	StatusCode int       `json:"status"`
-	Duration   float64   `json:"duration"`
+	Date          time.Time `json:"date"`
+	RequestID     string    `json:"request_id"`
+	Config        string    `json:"config"`
+	Path          string    `json:"path"`
+	URL           string    `json:"url"`
+	Method        string    `json:"method"`
+	StatusCode    int       `json:"status"`
+	Duration      float64   `json:"duration"`
+	ContentLength int64     `json:"content-length"`
+	Host          string    `json:"host"`
+	RemoteAddr    string    `json:"remote-address"`
+	Agent         string    `json:"user-agent"`
+	OS            string    `json:"os"`
+	GoVersion     string    `json:"go-version"`
 }
 
 type loggingResponseWriter struct {
@@ -43,11 +52,18 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 			l := Log{
 				start,
 				r.Header.Get("request_id"),
+				r.Header.Get("config"),
+				r.Header.Get("route"),
 				r.RequestURI,
 				r.Method,
 				lrw.statusCode,
-				float64(time.Since(start)) / float64(time.Millisecond)}
-
+				float64(time.Since(start)) / float64(time.Millisecond),
+				r.ContentLength,
+				r.Host,
+				r.RemoteAddr,
+				r.Header.Get("User-Agent"),
+				runtime.GOOS,
+				runtime.Version()}
 			lh.client.Log(&l, "api-gateway", "request")
 		}()
 	}

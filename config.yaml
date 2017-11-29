@@ -7,6 +7,13 @@ endpoints:
           name: health
           host: http://localhost:3000
           url: /posts
+  - url: /posts/:id
+    methods:
+      - method: GET
+        destination:
+          name: health
+          host: http://localhost:3000
+          url: /posts/:id
   - url: /comments
     methods:
       - method: GET
