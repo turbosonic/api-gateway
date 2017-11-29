@@ -3,15 +3,17 @@ package logging
 import (
 	"net/http"
 	"time"
-
-	elastic "gopkg.in/olivere/elastic.v2"
 )
 
-type LogHandler struct {
-	client *elastic.Client
+type LogClient interface {
+	Log(*Log, string, string)
 }
 
-type log struct {
+type LogHandler struct {
+	client LogClient
+}
+
+type Log struct {
 	Date       time.Time `json:"date"`
 	RequestID  string    `json:"request_id"`
 	URL        string    `json:"url"`
@@ -25,13 +27,8 @@ type loggingResponseWriter struct {
 	statusCode int
 }
 
-func New() LogHandler {
-	client, err := elastic.NewSimpleClient(elastic.SetURL("http://127.0.0.1:9200"))
-	if err != nil {
-		panic(err)
-	}
-
-	return LogHandler{client}
+func New(lc LogClient) LogHandler {
+	return LogHandler{lc}
 }
 
 func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
@@ -43,7 +40,7 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 		h.ServeHTTP(lrw, r)
 
 		go func() {
-			l := log{
+			l := Log{
 				start,
 				r.Header.Get("request_id"),
 				r.RequestURI,
@@ -51,7 +48,7 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 				lrw.statusCode,
 				float64(time.Since(start)) / float64(time.Millisecond)}
 
-			lh.client.Index().Index("turbosonic").Type("log").Id(l.RequestID).BodyJson(l).Do()
+			lh.client.Log(&l, "api-gateway", "request")
 		}()
 	}
 

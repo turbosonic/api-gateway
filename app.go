@@ -4,11 +4,14 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/turbosonic/api-gateway/authentication"
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/initializer"
 	"github.com/turbosonic/api-gateway/logging"
+	"github.com/turbosonic/api-gateway/logging/clients/elk"
+	"github.com/turbosonic/api-gateway/logging/clients/stdout"
 	"github.com/turbosonic/api-gateway/responseMarshal"
 
 	goji "goji.io"
@@ -42,7 +45,16 @@ func main() {
 	mux.Use(responseMarshal.AddHeaders)
 
 	// add response logging
-	logHandler := logging.New()
+	var logClient logging.LogClient
+
+	elasticURL := os.Getenv("LOGGING_ELASTIC_URL")
+	if elasticURL != "" {
+		logClient = elk.New(elasticURL)
+	} else {
+		logClient = stdout.New()
+	}
+
+	logHandler := logging.New(logClient)
 	mux.Use(logHandler.LogHandlerFunc)
 
 	// Register the endpoints

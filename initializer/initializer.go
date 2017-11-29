@@ -2,7 +2,6 @@ package initializer
 
 import (
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
@@ -41,7 +40,7 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 		case "DELETE":
 			p = pat.Delete(ep)
 		default:
-			log.Println("Couldn't add method: %s", m)
+			//log.Println("Couldn't add method: %s", m)
 			panic("Invalid method in configuration")
 		}
 
