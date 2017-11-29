@@ -2,6 +2,7 @@ package initializer
 
 import (
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -61,9 +62,16 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 				destinationURL = destinationURL + "?" + r.URL.RawQuery
 			}
 
+			body, err := ioutil.ReadAll(r.Body)
+
 			request := relay.RelayRequest{}
 			request.URL = d.Destination.Host + destinationURL
 			request.Method = d.Method
+			request.Body = body
+			request.Header = r.Header
+
+			request.Header.Add("route", strings.Replace(p.String(), configName, "", 1))
+			request.Header.Add("config", configName)
 
 			resp, err := rel.MakeRequest(request)
 			if err != nil {
