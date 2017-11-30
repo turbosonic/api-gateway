@@ -18,6 +18,10 @@ func New(elasticURL string) elkLogger {
 	return elkLogger{client}
 }
 
-func (elk elkLogger) Log(l *logging.Log, index string, logType string) {
+func (elk elkLogger) LogRequest(l *logging.RequestLog, index string, logType string) {
 	elk.client.Index().Index(index).Type(logType).Id(l.RequestID).BodyJson(l).Do()
+}
+
+func (elk elkLogger) LogRelay(l *logging.RelayLog, index string, logType string) {
+	elk.client.Index().Index(index).Type(logType).BodyJson(l).Do()
 }

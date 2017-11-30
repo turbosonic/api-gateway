@@ -7,14 +7,15 @@ import (
 )
 
 type LogClient interface {
-	Log(*Log, string, string)
+	LogRequest(*RequestLog, string, string)
+	LogRelay(*RelayLog, string, string)
 }
 
 type LogHandler struct {
 	client LogClient
 }
 
-type Log struct {
+type RequestLog struct {
 	Date          time.Time `json:"date"`
 	RequestID     string    `json:"request_id"`
 	Config        string    `json:"config"`
@@ -29,6 +30,16 @@ type Log struct {
 	Agent         string    `json:"user-agent"`
 	OS            string    `json:"os"`
 	GoVersion     string    `json:"go-version"`
+}
+
+type RelayLog struct {
+	Date       time.Time `json:"date"`
+	RequestID  string    `json:"request_id"`
+	Host       string    `json:"host"`
+	URL        string    `json:"url"`
+	Method     string    `json:"method"`
+	StatusCode int       `json:"status"`
+	Duration   float64   `json:"duration"`
 }
 
 type loggingResponseWriter struct {
@@ -49,7 +60,7 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 		h.ServeHTTP(lrw, r)
 
 		go func() {
-			l := Log{
+			l := RequestLog{
 				start,
 				r.Header.Get("request_id"),
 				r.Header.Get("config"),
@@ -64,7 +75,7 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 				r.Header.Get("User-Agent"),
 				runtime.GOOS,
 				runtime.Version()}
-			lh.client.Log(&l, "api-gateway", "request")
+			lh.client.LogRequest(&l, "api-gateway", "request")
 		}()
 	}
 

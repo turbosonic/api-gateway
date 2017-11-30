@@ -58,7 +58,7 @@ func main() {
 	mux.Use(logHandler.LogHandlerFunc)
 
 	// Register the endpoints
-	initializer.RegisterEndpoints(mux, config)
+	initializer.RegisterEndpoints(mux, config, logClient)
 
 	// start listening
 	err = http.ListenAndServe(":8080", mux)
