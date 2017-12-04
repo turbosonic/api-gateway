@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/turbosonic/api-gateway/authentication"
+	"github.com/joho/godotenv"
+
+	"github.com/turbosonic/api-gateway/authentication/clients/auth0"
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/initializer"
 	"github.com/turbosonic/api-gateway/responseMarshal"
@@ -25,6 +27,12 @@ func main() {
 		*configFile = "config.yaml"
 	}
 
+	// load env variables
+	err := godotenv.Load()
+	if err != nil {
+		log.Print("Error loading .env file")
+	}
+
 	// get all of the endpoints
 	config, err := configurations.GetConfiguration(*configFile)
 	if err != nil {
@@ -35,7 +43,7 @@ func main() {
 	mux := goji.NewMux()
 
 	// add authentication
-	mux.Use(authentication.Authenticate)
+	mux.Use(auth0.CheckJwt)
 
 	// add response marshaling
 	mux.Use(responseMarshal.AddHeaders)
