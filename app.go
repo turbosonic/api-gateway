@@ -4,6 +4,9 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 
 	"github.com/turbosonic/api-gateway/authentication"
 	"github.com/turbosonic/api-gateway/configurations"
@@ -25,6 +28,12 @@ func main() {
 		*configFile = "config.yaml"
 	}
 
+	// load env variables
+	err := godotenv.Load()
+	if err != nil {
+		log.Print("Error loading .env file")
+	}
+
 	// get all of the endpoints
 	config, err := configurations.GetConfiguration(*configFile)
 	if err != nil {
@@ -34,17 +43,23 @@ func main() {
 	// create a new mux from goju
 	mux := goji.NewMux()
 
-	// add authentication
-	mux.Use(authentication.Authenticate)
-
 	// add response marshaling
 	mux.Use(responseMarshal.AddHeaders)
+
+	// add authentication
+	mux.Use(authentication.Handler)
 
 	// Register the endpoints
 	initializer.RegisterEndpoints(mux, config)
 
+	// get the port
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// start listening
-	err = http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":"+port, mux)
 	if err != nil {
 		log.Println(err)
 	}
