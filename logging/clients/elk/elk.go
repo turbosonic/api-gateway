@@ -1,6 +1,8 @@
 package elk
 
 import (
+	"os"
+
 	"github.com/turbosonic/api-gateway/logging"
 	elastic "gopkg.in/olivere/elastic.v2"
 )
@@ -9,7 +11,8 @@ type elkLogger struct {
 	client *elastic.Client
 }
 
-func New(elasticURL string) elkLogger {
+func New() elkLogger {
+	elasticURL := os.Getenv("LOGGING_ELASTIC_URL")
 	client, err := elastic.NewSimpleClient(elastic.SetURL(elasticURL))
 	if err != nil {
 		panic(err)

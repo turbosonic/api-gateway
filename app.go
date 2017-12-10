@@ -10,10 +10,9 @@ import (
 
 	"github.com/turbosonic/api-gateway/authentication"
 	"github.com/turbosonic/api-gateway/configurations"
+	"github.com/turbosonic/api-gateway/factories"
 	"github.com/turbosonic/api-gateway/initializer"
 	"github.com/turbosonic/api-gateway/logging"
-	"github.com/turbosonic/api-gateway/logging/clients/elk"
-	"github.com/turbosonic/api-gateway/logging/clients/stdout"
 	"github.com/turbosonic/api-gateway/responseMarshal"
 
 	goji "goji.io"
@@ -50,17 +49,10 @@ func main() {
 	mux.Use(responseMarshal.AddHeaders)
 
 	// add response logging
-	var logClient logging.LogClient
-
-	elasticURL := os.Getenv("LOGGING_ELASTIC_URL")
-	if elasticURL != "" {
-		logClient = elk.New(elasticURL)
-	} else {
-		logClient = stdout.New()
-	}
-
+	logClient := factories.LogClient()
 	logHandler := logging.New(logClient)
 	mux.Use(logHandler.LogHandlerFunc)
+
 	// add authentication
 	mux.Use(authentication.Handler)
 

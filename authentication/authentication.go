@@ -18,13 +18,13 @@ func Handler(h http.Handler) http.Handler {
 
 	switch authProvider {
 	case "auth0":
-		fmt.Println("Authentication using Auth0")
+		fmt.Println("[x] Authentication using Auth0")
 		return auth0.CheckJwt(h)
 	case "none":
-		fmt.Println("No authentication provider, all requests will be allowed")
+		fmt.Println("[x] No authentication provider, all requests will be allowed")
 		return noProvider(h)
 	default:
-		fmt.Println("No authentication provider: all requests will be denied")
+		fmt.Println("[x] No authentication provider: all requests will be denied")
 		return denyEverything(h)
 	}
 }
