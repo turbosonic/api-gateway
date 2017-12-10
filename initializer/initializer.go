@@ -3,9 +3,10 @@ package initializer
 import (
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
+
+	"github.com/turbosonic/api-gateway/logging"
 
 	"github.com/turbosonic/api-gateway/parammap"
 
@@ -16,10 +17,12 @@ import (
 )
 
 var (
-	rel = relay.New(10, 30)
+	rel relay.Relay
 )
 
-func RegisterEndpoints(mux *goji.Mux, config configurations.Configuration) {
+func RegisterEndpoints(mux *goji.Mux, config configurations.Configuration, logger logging.LogClient) {
+	rel = relay.New(10, 30, logger)
+
 	// loop through each endpoint and add a request handler
 	for _, e := range config.Endpoints {
 		createEndpoint(mux, config.Name, &e)
@@ -42,7 +45,7 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 		case "DELETE":
 			p = pat.Delete(ep)
 		default:
-			log.Println("Couldn't add method: %s", m)
+			//log.Println("Couldn't add method: %s", m)
 			panic("Invalid method in configuration")
 		}
 
@@ -70,6 +73,10 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 			request.Method = d.Method
 			request.Body = body
 			request.Header = r.Header
+			request.Host = d.Destination.Host
+
+			request.Header.Add("route", strings.Replace(p.String(), configName, "", 1))
+			request.Header.Add("config", configName)
 
 			resp, err := rel.MakeRequest(request)
 			if err != nil {

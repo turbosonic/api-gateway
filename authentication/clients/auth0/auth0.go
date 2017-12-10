@@ -16,21 +16,25 @@ type Response struct {
 }
 
 func CheckJwt(h http.Handler) http.Handler {
+	fmt.Println("[x] Auth0 domain:", os.Getenv("AUTH0_DOMAIN"))
+	fmt.Println("[x] Auth0 audience:", os.Getenv("AUTH0_AUDIENCE"))
+
+	JWKS_URI := "https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json"
+	AUTH0_API_ISSUER := "https://" + os.Getenv("AUTH0_DOMAIN") + "/"
+
+	client := auth0.NewJWKClient(auth0.JWKClientOptions{URI: JWKS_URI})
+	aud := os.Getenv("AUTH0_AUDIENCE")
+	audience := []string{aud}
+	configuration := auth0.NewConfiguration(client, audience, AUTH0_API_ISSUER, jose.RS256)
+	validator := auth0.NewValidator(configuration)
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		JWKS_URI := "https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json"
-		AUTH0_API_ISSUER := "https://" + os.Getenv("AUTH0_DOMAIN") + "/"
-
-		client := auth0.NewJWKClient(auth0.JWKClientOptions{URI: JWKS_URI})
-		aud := os.Getenv("AUTH0_AUDIENCE")
-		audience := []string{aud}
-		configuration := auth0.NewConfiguration(client, audience, AUTH0_API_ISSUER, jose.RS256)
-		validator := auth0.NewValidator(configuration)
 
 		token, err := validator.ValidateRequest(r)
 
 		if err != nil {
 			fmt.Println("Token is not valid or missing token")
+			fmt.Println(err)
 
 			response := Response{
 				Message: "Missing or invalid token.",

@@ -1,5 +1,7 @@
 # Turbosonic: api-gateway
-A lightweight, sub-millisecond api-gateway intended for microservices on docker
+A lightweight, sub-millisecond api-gateway intended for microservices on docker and monitored via Kibana
+
+![Monitoring](https://preview.ibb.co/iDxz4b/Pasted_image_at_2017_11_30_03_45_PM.png)
 
 ## What does it do?
 Acts as the conduit between the outside world and your internal microservice ecosystem, using a simple yaml configuration file you can set up your routing to take external requests and forward them on to internal endpoints.

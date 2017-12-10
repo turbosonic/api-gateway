@@ -1,19 +1,38 @@
 name: "/web/v1"
 endpoints:
-  - url: /example
+  - url: /posts
     methods:
       - method: GET
         destination:
-          name: example
-          host: http://example-service
-          url: /endpoint
-  - url: /example/:id
+          name: health
+          host: http://localhost:3000
+          url: /posts
+  - url: /posts/:id
     methods:
       - method: GET
         destination:
-          name: example
-          host: http://example-service
-          url: /endpoint/:id
+          name: health
+          host: http://localhost:3000
+          url: /posts/:id
+  - url: /comments
+    methods:
+      - method: GET
+        destination:
+          name: get comments
+          host: http://localhost:3000
+          url: /comments
+      - method: POST
+        destination:
+          name: add comment
+          host: http://localhost:3000
+          url: /comments
+  - url: /profile
+    methods:
+      - method: GET
+        destination:
+          name: health
+          host: http://localhost:3000
+          url: /profile
 
 
 
