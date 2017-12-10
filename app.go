@@ -46,6 +46,7 @@ func main() {
 	mux := goji.NewMux()
 
 	// add response marshaling
+	mux.Use(responseMarshal.CorsHandler)
 	mux.Use(responseMarshal.AddHeaders)
 
 	// add response logging
