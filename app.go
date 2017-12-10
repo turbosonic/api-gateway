@@ -4,10 +4,11 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 
-	"github.com/turbosonic/api-gateway/authentication/clients/auth0"
+	"github.com/turbosonic/api-gateway/authentication"
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/initializer"
 	"github.com/turbosonic/api-gateway/responseMarshal"
@@ -42,17 +43,23 @@ func main() {
 	// create a new mux from goju
 	mux := goji.NewMux()
 
-	// add authentication
-	mux.Use(auth0.CheckJwt)
-
 	// add response marshaling
 	mux.Use(responseMarshal.AddHeaders)
+
+	// add authentication
+	mux.Use(authentication.Handler)
 
 	// Register the endpoints
 	initializer.RegisterEndpoints(mux, config)
 
+	// get the port
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// start listening
-	err = http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":"+port, mux)
 	if err != nil {
 		log.Println(err)
 	}
