@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -15,6 +14,7 @@ import (
 	"github.com/turbosonic/api-gateway/logging"
 	"github.com/turbosonic/api-gateway/responseMarshal"
 
+	"github.com/zenazn/goji/graceful"
 	goji "goji.io"
 )
 
@@ -67,7 +67,7 @@ func main() {
 	}
 
 	// start listening
-	err = http.ListenAndServe(":"+port, mux)
+	err = graceful.ListenAndServeTLS(":"+port, "cert.pem", "key.pem", mux)
 	if err != nil {
 		log.Println(err)
 	}
