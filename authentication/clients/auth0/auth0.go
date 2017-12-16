@@ -1,6 +1,7 @@
 package auth0
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,7 +9,6 @@ import (
 
 	auth0 "github.com/auth0-community/go-auth0"
 	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 type Response struct {
@@ -44,36 +44,19 @@ func CheckJwt(h http.Handler) http.Handler {
 			json.NewEncoder(w).Encode(response)
 
 		} else {
-			// Ensure the token has the correct scope
-			result := checkScope(r, validator, token)
-			if result == true {
-				// If the token is valid and we have the right scope, we'll pass through the middleware
-				h.ServeHTTP(w, r)
-			} else {
+			claims := map[string]interface{}{}
+			err := validator.Claims(r, token, &claims)
+			if err != nil {
 				response := Response{
-					Message: "You do not have the read:messages scope.",
+					Message: "Missing or invalid token.",
 				}
 				w.WriteHeader(http.StatusUnauthorized)
 				json.NewEncoder(w).Encode(response)
-
+			} else {
+				ctx := context.WithValue(r.Context(), "roles", claims[os.Getenv("AUTH0_AUDIENCE")+"/roles"])
+				ctx = context.WithValue(ctx, "scopes", claims["scope"])
+				h.ServeHTTP(w, r.WithContext(ctx))
 			}
 		}
 	})
-}
-
-func checkScope(r *http.Request, validator *auth0.JWTValidator, token *jwt.JSONWebToken) bool {
-	// claims := map[string]interface{}{}
-	// err := validator.Claims(r, token, &claims)
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return false
-	// }
-
-	// if claims["scope"] != nil && strings.Contains(claims["scope"].(string), "read:messages") {
-	// 	return true
-	// }
-	// return false
-
-	return true
 }
