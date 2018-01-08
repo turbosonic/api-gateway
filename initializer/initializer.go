@@ -12,6 +12,7 @@ import (
 
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/relay"
+
 	goji "goji.io"
 	"goji.io/pat"
 )
@@ -53,7 +54,19 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 		d := m
 
 		mux.HandleFunc(p, func(w http.ResponseWriter, r *http.Request) {
-			// TODO: authorization
+			// check roles
+			if !checkRoles(r, d) {
+				w.WriteHeader(http.StatusNotFound)
+				io.Copy(w, strings.NewReader("404 page not found"))
+				return
+			}
+
+			// check scopes
+			if !checkScopes(r, d) {
+				w.WriteHeader(http.StatusNotFound)
+				io.Copy(w, strings.NewReader("404 page not found"))
+				return
+			}
 
 			// substitute parameters
 			destinationURL := d.Destination.URL
@@ -91,4 +104,30 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 			io.Copy(w, resp.Body)
 		})
 	}
+}
+
+func checkRoles(r *http.Request, method configurations.EndpointMethod) bool {
+	for _, mr := range method.Roles {
+		if mr == "*" {
+			return true
+		}
+		ur := r.Context().Value("roles").(string)
+		if strings.Index(ur, mr) > -1 {
+			return true
+		}
+	}
+	return false
+}
+
+func checkScopes(r *http.Request, method configurations.EndpointMethod) bool {
+	for _, ms := range method.Scopes {
+		if ms == "*" {
+			return true
+		}
+		us := r.Context().Value("scopes").(string)
+		if strings.Index(us, ms) > -1 {
+			return true
+		}
+	}
+	return false
 }

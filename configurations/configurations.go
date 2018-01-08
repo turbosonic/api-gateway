@@ -21,6 +21,7 @@ type Endpoint struct {
 type EndpointMethod struct {
 	Method      string
 	Roles       []string `yaml:",flow"`
+	Scopes      []string `yaml:",flow"`
 	Destination EndpointDestination
 	//Destinations []EndpointDestination `yaml:"destinations"`
 }

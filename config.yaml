@@ -3,6 +3,10 @@ endpoints:
   - url: /posts
     methods:
       - method: GET
+        roles:
+          - "admin"
+        scopes:
+          - "*"
         destination:
           name: health
           host: http://localhost:3000
