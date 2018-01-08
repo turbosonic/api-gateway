@@ -4,7 +4,7 @@ endpoints:
     methods:
       - method: GET
         roles:
-          - "admins"
+          - "admin"
         scopes:
           - "*"
         destination:
