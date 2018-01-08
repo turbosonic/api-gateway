@@ -3,6 +3,7 @@ package relay
 import (
 	"bytes"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -53,7 +54,15 @@ func (relay Relay) MakeRequest(r RelayRequest) (resp *http.Response, err error) 
 			resp.StatusCode,
 			float64(time.Since(start)) / float64(time.Millisecond)}
 
-		relay.logger.LogRelay(&rl, "api-gateway-request", "relay-request")
+		index := os.Getenv("LOGGING_INTERNAL_REQUEST_INDEX_NAME")
+
+		if index == "" {
+			index = "api-gateway-request"
+		}
+
+		index = index + "-" + start.Format("2006-01-02")
+
+		relay.logger.LogRelay(&rl, index, "relay-request")
 	}()
 
 	return resp, nil
