@@ -9,8 +9,8 @@ endpoints:
           - "*"
         destination:
           name: health
-          host: https://www.google.com
-          url: /
+          host: http://localhost:3000
+          url: /posts
   - url: /posts/:id
     methods:
       - method: GET
