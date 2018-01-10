@@ -4,16 +4,20 @@ endpoints:
     methods:
       - method: GET
         roles:
-          - "admin"
+          - "*"
         scopes:
           - "*"
         destination:
           name: health
-          host: http://localhost:3000
-          url: /posts
+          host: https://www.google.com
+          url: /
   - url: /posts/:id
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: health
           host: http://localhost:3000
@@ -21,6 +25,10 @@ endpoints:
   - url: /comments
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: get comments
           host: http://localhost:3000
@@ -33,6 +41,10 @@ endpoints:
   - url: /profile
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: health
           host: http://localhost:3000
