@@ -15,7 +15,7 @@ func AddHeaders(h http.Handler) http.Handler {
 		r.Header.Add("request_id", fmt.Sprint(u))
 
 		w.Header().Set("request_id", fmt.Sprint(u))
-		w.Header().Set("content-type", "application/json")
+
 		h.ServeHTTP(w, r)
 	}
 
