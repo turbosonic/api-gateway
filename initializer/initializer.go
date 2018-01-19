@@ -107,12 +107,9 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 }
 
 func checkRoles(r *http.Request, method configurations.EndpointMethod) bool {
+	ur := r.Context().Value("roles").(string)
 	for _, mr := range method.Roles {
-		if mr == "*" {
-			return true
-		}
-		ur := r.Context().Value("roles").(string)
-		if strings.Index(ur, mr) > -1 {
+		if mr == "*" || isThisInThat(mr, ur) {
 			return true
 		}
 	}
@@ -120,12 +117,18 @@ func checkRoles(r *http.Request, method configurations.EndpointMethod) bool {
 }
 
 func checkScopes(r *http.Request, method configurations.EndpointMethod) bool {
+	us := r.Context().Value("scopes").(string)
 	for _, ms := range method.Scopes {
-		if ms == "*" {
+		if ms == "*" || isThisInThat(ms, us) {
 			return true
 		}
-		us := r.Context().Value("scopes").(string)
-		if strings.Index(us, ms) > -1 {
+	}
+	return false
+}
+
+func isThisInThat(this string, that string) bool {
+	for _, i := range strings.Split(that, " ") {
+		if this == i {
 			return true
 		}
 	}
