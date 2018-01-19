@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -31,7 +32,9 @@ func Handler(h http.Handler) http.Handler {
 
 func noProvider(h http.Handler) http.Handler {
 	auth := func(w http.ResponseWriter, r *http.Request) {
-		h.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), "roles", "")
+		ctx = context.WithValue(ctx, "scopes", "")
+		h.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(auth)
 }
