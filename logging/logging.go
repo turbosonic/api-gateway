@@ -2,6 +2,7 @@ package logging
 
 import (
 	"net/http"
+	"os"
 	"runtime"
 	"time"
 )
@@ -75,7 +76,16 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 				r.Header.Get("User-Agent"),
 				runtime.GOOS,
 				runtime.Version()}
-			lh.client.LogRequest(&l, "api-gateway", "request")
+
+			index := os.Getenv("LOGGING_EXTERNAL_REQUEST_INDEX_NAME")
+
+			if index == "" {
+				index = "api-gateway"
+			}
+
+			index = index + "-" + start.Format("2006-01-02")
+
+			lh.client.LogRequest(&l, index, "request")
 		}()
 	}
 

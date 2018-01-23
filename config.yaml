@@ -3,6 +3,10 @@ endpoints:
   - url: /posts
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: health
           host: http://virtserver.swaggerhub.com/Turbosonic/iMoff/1.0.0
@@ -10,6 +14,10 @@ endpoints:
   - url: /posts/:id
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: health
           host: http://localhost:3000
@@ -17,6 +25,10 @@ endpoints:
   - url: /comments
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: get comments
           host: http://localhost:3000
@@ -29,6 +41,10 @@ endpoints:
   - url: /profile
     methods:
       - method: GET
+        roles:
+          - "*"
+        scopes:
+          - "*"
         destination:
           name: health
           host: http://localhost:3000

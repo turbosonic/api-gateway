@@ -12,6 +12,7 @@ import (
 
 	"github.com/turbosonic/api-gateway/configurations"
 	"github.com/turbosonic/api-gateway/relay"
+
 	goji "goji.io"
 	"goji.io/pat"
 )
@@ -53,7 +54,19 @@ func createEndpoint(mux *goji.Mux, configName string, endpoint *configurations.E
 		d := m
 
 		mux.HandleFunc(p, func(w http.ResponseWriter, r *http.Request) {
-			// TODO: authorization
+			// check roles
+			if !checkRoles(r, d) {
+				w.WriteHeader(http.StatusNotFound)
+				io.Copy(w, strings.NewReader("404 page not found"))
+				return
+			}
+
+			// check scopes
+			if !checkScopes(r, d) {
+				w.WriteHeader(http.StatusNotFound)
+				io.Copy(w, strings.NewReader("404 page not found"))
+				return
+			}
 
 			// substitute parameters
 			destinationURL := d.Destination.URL
@@ -101,4 +114,31 @@ func copyHeader(dst, src http.Header) {
 			dst.Add(k, v)
 		}
 	}
+func checkRoles(r *http.Request, method configurations.EndpointMethod) bool {
+	ur := r.Context().Value("roles").(string)
+	for _, mr := range method.Roles {
+		if mr == "*" || isThisInThat(mr, ur) {
+			return true
+		}
+	}
+	return false
+}
+
+func checkScopes(r *http.Request, method configurations.EndpointMethod) bool {
+	us := r.Context().Value("scopes").(string)
+	for _, ms := range method.Scopes {
+		if ms == "*" || isThisInThat(ms, us) {
+			return true
+		}
+	}
+	return false
+}
+
+func isThisInThat(this string, that string) bool {
+	for _, i := range strings.Split(that, " ") {
+		if this == i {
+			return true
+		}
+	}
+	return false
 }

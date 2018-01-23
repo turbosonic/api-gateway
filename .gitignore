@@ -22,6 +22,6 @@ debug
 # environmental variables
 .env
 
-# certificates
-*.pem
+# encryption keys
 *.crt
+*.pem
