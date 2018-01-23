@@ -5,8 +5,8 @@ endpoints:
       - method: GET
         destination:
           name: health
-          host: http://localhost:3000
-          url: /posts
+          host: http://virtserver.swaggerhub.com/Turbosonic/iMoff/1.0.0
+          url: /holidays
   - url: /posts/:id
     methods:
       - method: GET

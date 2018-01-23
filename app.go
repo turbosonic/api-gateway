@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -66,9 +68,21 @@ func main() {
 		port = "8080"
 	}
 
-	// start listening
-	err = graceful.ListenAndServeTLS(":"+port, "cert.pem", "key.pem", mux)
-	if err != nil {
-		log.Println(err)
+	fmt.Println("[x] Listening on port", port)
+
+	// check for cert and key
+	if _, certErr := os.Stat("./data/certs/cert.pem"); os.IsNotExist(certErr) {
+		fmt.Println("[x] Not using TLS")
+		err = http.ListenAndServe(":"+port, mux)
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		fmt.Println("[x] Using TLS")
+		err = graceful.ListenAndServeTLS(":"+port, "./data/certs/cert.pem", "./data/certs/key.pem", mux)
+		if err != nil {
+			log.Println(err)
+		}
 	}
+
 }
