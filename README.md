@@ -54,7 +54,7 @@ $ docker run -d -p 8080:8080 \
   --net turbosonic \
   -v /myconfigs/config.yaml:/data/config.yaml \
   -v /mycerts/cert.pem:/data/certs/cert.pem \
-  -v /mycerts/key.yaml:/data/certs/key.pem \
+  -v /mycerts/key.pem:/data/certs/key.pem \
   turbosonic/api-gateway
 ```
 
