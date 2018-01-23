@@ -114,6 +114,8 @@ func copyHeader(dst, src http.Header) {
 			dst.Add(k, v)
 		}
 	}
+}
+
 func checkRoles(r *http.Request, method configurations.EndpointMethod) bool {
 	ur := r.Context().Value("roles").(string)
 	for _, mr := range method.Roles {
