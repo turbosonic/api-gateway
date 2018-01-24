@@ -10,6 +10,11 @@ import (
 	"github.com/turbosonic/api-gateway/logging"
 )
 
+var (
+	// a list of headers which will be stripped from target responses before being sent to the client
+	nonProxyHeaders = [...]string{"Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers"}
+)
+
 type Relay struct {
 	client *http.Client
 	logger logging.LogClient
@@ -64,6 +69,10 @@ func (relay Relay) MakeRequest(r RelayRequest) (resp *http.Response, err error) 
 
 		relay.logger.LogRelay(&rl, index, "relay-request")
 	}()
+
+	for _, h := range nonProxyHeaders {
+		resp.Header.Del(h)
+	}
 
 	return resp, nil
 }
