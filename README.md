@@ -30,17 +30,33 @@ $ docker network create turbosonic
 ```
 
 ### Run the docker image
-All of Turbosonic's services run on a scratch docker image, which means they're very small and incredibly lightweight (7mb of magic!), you'll need a linux docker machine running, then run the following command:
+All of Turbosonic's services run on a scratch docker image, which means they're very small and incredibly lightweight (7mb of magic!), the following command will run the api-gateway in a container:
 ```bash
-$ docker run -d -p 8080:8080 --name api-gateway --net turbosonic -v /d/go/src/github.com/turbosonic/api-gateway/config.yaml:/config.yaml turbosonic/api-gateway
+$ docker run -d -p 8080:8080 \ 
+  --name api-gateway \
+  --net turbosonic \
+  -v /myconfigs/config.yaml:/data/config.yaml \
+  turbosonic/api-gateway
 ```
 This is just standard docker stuff:
 * `-d` is to run to in the background (daemon mode)
 * `-p {external port}:8080` will expose the gateway to the port you add
 * `--name {a nice name}` gives the container a nice name
 * `-net {name of docker network}` the name of the docker network (created in the last step)
-* `-v {path to yaml file}:/config.yaml` mounts your config file into the container to be used
+* `-v {path to yaml file}:/data/config.yaml` mounts your config file into the container to be used
 * `turbosonic/api-gateway` is the name of the image on docker hub
+
+### TLS
+If you want to run your gateway with TLS (and thus an HTTPS reverse proxy), just mount your cert and private key as below:
+```bash
+$ docker run -d -p 8080:8080 \ 
+  --name api-gateway \
+  --net turbosonic \
+  -v /myconfigs/config.yaml:/data/config.yaml \
+  -v /mycerts/cert.pem:/data/certs/cert.pem \
+  -v /mycerts/key.pem:/data/certs/key.pem \
+  turbosonic/api-gateway
+```
 
 ## Things to come
 This is the start of a journey to create a simple, secure, scalable and production ready api-gateway, to allow developers to focus on the core functionality of their systems, below is a list of things to be added in the coming months.
