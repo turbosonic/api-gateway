@@ -1,5 +1,6 @@
 FROM scratch
 ADD main.exe /
-ADD config.yaml /
-CMD ["/main.exe", "--config",  "/config.yaml"]
-EXPOSE 8080
+ADD data/config.yaml /data/
+ENV PORT=80
+ENTRYPOINT ["/main.exe", "--config",  "./data/config.yaml"]
+EXPOSE 80
