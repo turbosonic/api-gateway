@@ -14,23 +14,23 @@ script:
  - docker build -t turbosonic/api-gateway .
 
 after_success:
-  - if [ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "true" ]; then
+  - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "true" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:alpha;
-    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
     docker push turbosonic/api-gateway;
     fi
-  - if [ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" ]; then
+  - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:beta;
-    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
     docker push turbosonic/api-gateway;
     fi
-  - if [ $TRAVIS_BRANCH == "release/18.02" && $TRAVIS_PULL_REQUEST == "true" ]; then
+  - if [[ "$TRAVIS_BRANCH" == "release/18.02" && "$TRAVIS_PULL_REQUEST" == "true" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:18.02-alpha;
-    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
     docker push turbosonic/api-gateway;
     fi
-  - if [ $TRAVIS_BRANCH == "release/18.02" && $TRAVIS_PULL_REQUEST == "false" ]; then
+  - if [[ "$TRAVIS_BRANCH" == "release/18.02" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:18.02-beta;
-    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
     docker push turbosonic/api-gateway;
     fi
