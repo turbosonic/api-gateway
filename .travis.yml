@@ -9,7 +9,6 @@ services:
   - docker
 
 script:
- - go test -v ./tests
  - go build -o main.exe app.go
  - docker build -t turbosonic/api-gateway .
 
