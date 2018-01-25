@@ -7,15 +7,20 @@ go:
 
 services:
   - docker
-jobs: 
-  include:
-    - stage: go build
-      script:
-        - go build -o main.exe app.go
-    - stage: docker build
-      script: 
-        - docker build -t turbosonic/api-gateway .
-    - stage: docker push
-      if: branch = master
-      script:
-        - docker tag turbosonic/api-gateway turbosonic/api-gateway:$TRAVIS_BRANCH
+
+script:
+ - go test -v ./tests
+ - go build -o main.exe app.go
+ - docker build -t turbosonic/api-gateway .
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker tag turbosonic/api-gateway turbosonic/api-gateway:edge
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+    docker push turbosonic/api-gateway;
+    fi
+  - if [ "$TRAVIS_BRANCH" == "release/18.02" ]; then
+    docker tag turbosonic/api-gateway turbosonic/api-gateway:18.02-beta
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+    docker push turbosonic/api-gateway;
+    fi
