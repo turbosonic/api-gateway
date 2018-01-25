@@ -5,12 +5,16 @@ import (
 	"net/http"
 	"os"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
 func AddHeaders(h http.Handler) http.Handler {
 	addH := func(w http.ResponseWriter, r *http.Request) {
-		u := uuid.NewV4()
+		u, err := uuid.NewV4()
+		if err != nil {
+			fmt.Printf("Something went wrong: %s", err)
+			return
+		}
 
 		r.Header.Add("request_id", fmt.Sprint(u))
 
