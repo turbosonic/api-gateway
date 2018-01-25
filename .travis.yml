@@ -8,6 +8,9 @@ go:
 services:
   - docker
 
+notifications:
+  slack: wdgenterprises:uc36CCmzfnKQWhpvfE1pytCI
+
 script:
  - go test -v ./tests
  - go build -o main.exe app.go
