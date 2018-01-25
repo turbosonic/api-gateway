@@ -3,14 +3,6 @@ language: go
 go:
   - 1.9.x
 
-before_install:
-  - go get github.com/satori/go.uuid
-  - go get gopkg.in/olivere/elastic.v2
-  - go get goji.io
-  - go get gopkg.in/yaml.v2
-  - go get gopkg.in/square/go-jose.v2
-  - go get github.com/auth0-community/go-auth0
-
 script:
  - go test -v ./tests
  - go build -o main.exe app.go
