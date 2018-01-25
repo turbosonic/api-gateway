@@ -1,4 +1,6 @@
 # Turbosonic: api-gateway
+[![Build Status](https://api.travis-ci.org/turbosonic/api-gateway.svg?branch=master)](https://travis-ci.org/turbosonic/api-gateway)
+
 A lightweight, sub-millisecond api-gateway intended for microservices on docker and monitored via Kibana
 
 ![Monitoring](https://preview.ibb.co/iDxz4b/Pasted_image_at_2017_11_30_03_45_PM.png)
