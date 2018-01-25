@@ -13,6 +13,7 @@ notifications:
 
 script:
  - go test -v ./tests
+ - export GOARCH=386
  - go build -o main.exe app.go
  - docker build -t turbosonic/api-gateway .
 
@@ -20,20 +21,20 @@ after_success:
   - if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST != "false" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:alpha;
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
-    docker push turbosonic/api-gateway;
+    docker push turbosonic/api-gateway:alpha;
     fi
   - if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:beta;
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
-    docker push turbosonic/api-gateway;
+    docker push turbosonic/api-gateway:beta;
     fi
   - if [[ $TRAVIS_BRANCH == "release/18.02" && $TRAVIS_PULL_REQUEST != "false" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:18.02-alpha;
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
-    docker push turbosonic/api-gateway;
+    docker push turbosonic/api-gateway:18.02-alpha;
     fi
   - if [[ $TRAVIS_BRANCH == "release/18.02" && $TRAVIS_PULL_REQUEST == "false" ]]; then
     docker tag turbosonic/api-gateway turbosonic/api-gateway:18.02-beta;
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
-    docker push turbosonic/api-gateway;
+    docker push turbosonic/api-gateway:18.02-beta;
     fi
