@@ -29,7 +29,7 @@ func main() {
 	flag.Parse()
 
 	if *configFile == "" {
-		*configFile = "config.yaml"
+		*configFile = "data/config.yaml"
 	}
 
 	// load env variables

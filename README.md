@@ -1,4 +1,6 @@
 # Turbosonic: api-gateway
+[![Build Status](https://api.travis-ci.org/turbosonic/api-gateway.svg?branch=master)](https://travis-ci.org/turbosonic/api-gateway)
+
 A lightweight, sub-millisecond api-gateway intended for microservices on docker and monitored via Kibana
 
 ![Monitoring](https://preview.ibb.co/iDxz4b/Pasted_image_at_2017_11_30_03_45_PM.png)
@@ -32,7 +34,7 @@ $ docker network create turbosonic
 ### Run the docker image
 All of Turbosonic's services run on a scratch docker image, which means they're very small and incredibly lightweight (7mb of magic!), the following command will run the api-gateway in a container:
 ```bash
-$ docker run -d -p 8080:8080 \ 
+$ docker run -d -p 80:80 \ 
   --name api-gateway \
   --net turbosonic \
   -v /myconfigs/config.yaml:/data/config.yaml \
@@ -40,7 +42,7 @@ $ docker run -d -p 8080:8080 \
 ```
 This is just standard docker stuff:
 * `-d` is to run to in the background (daemon mode)
-* `-p {external port}:8080` will expose the gateway to the port you add
+* `-p {external port}:80` will expose the gateway to the port you add
 * `--name {a nice name}` gives the container a nice name
 * `-net {name of docker network}` the name of the docker network (created in the last step)
 * `-v {path to yaml file}:/data/config.yaml` mounts your config file into the container to be used
@@ -49,7 +51,7 @@ This is just standard docker stuff:
 ### TLS
 If you want to run your gateway with TLS (and thus an HTTPS reverse proxy), just mount your cert and private key as below:
 ```bash
-$ docker run -d -p 8080:8080 \ 
+$ docker run -d -p 443:80 \ 
   --name api-gateway \
   --net turbosonic \
   -v /myconfigs/config.yaml:/data/config.yaml \
