@@ -13,3 +13,4 @@ before_install:
 
 script:
  - go test -v ./tests
+ - go build -o main.exe app.go
