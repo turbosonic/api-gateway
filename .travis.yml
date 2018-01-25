@@ -13,8 +13,8 @@ notifications:
 
 script:
  - go test -v ./tests
- - go build -o main.exe app.go
  - export GOARCH=386
+ - go build -o main.exe app.go
  - docker build -t turbosonic/api-gateway .
 
 after_success:
