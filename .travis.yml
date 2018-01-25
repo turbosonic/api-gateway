@@ -7,16 +7,15 @@ go:
 
 services:
   - docker
-
-stages:
-  - name: go build
-    script:
-      - go test -v ./tests
-      - go build -o main.exe app.go
-  - name: docker build
-    script: 
-      - docker build -t turbosonic/api-gateway .
-  - name: docker push
-    if: branch = master
-    script:
-      - docker tag turbosonic/api-gateway turbosonic/api-gateway:$TRAVIS_BRANCH
+jobs: 
+  include:
+    - stage: go build
+      script:
+        - go build -o main.exe app.go
+    - stage: docker build
+      script: 
+        - docker build -t turbosonic/api-gateway .
+    - stage: docker push
+      if: branch = master
+      script:
+        - docker tag turbosonic/api-gateway turbosonic/api-gateway:$TRAVIS_BRANCH
