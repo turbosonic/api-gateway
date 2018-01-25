@@ -1,6 +1,3 @@
-env:
-  - GOARCH=386
-
 sudo: required
 
 language: go
@@ -17,6 +14,7 @@ notifications:
 script:
  - go test -v ./tests
  - go build -o main.exe app.go
+ - export GOARCH=386
  - docker build -t turbosonic/api-gateway .
 
 after_success:
