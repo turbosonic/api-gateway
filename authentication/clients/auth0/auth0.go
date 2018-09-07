@@ -22,11 +22,11 @@ func CheckJwt(h http.Handler) http.Handler {
 	JWKS_URI := "https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json"
 	AUTH0_API_ISSUER := "https://" + os.Getenv("AUTH0_DOMAIN") + "/"
 
-	client := auth0.NewJWKClient(auth0.JWKClientOptions{URI: JWKS_URI})
+	client := auth0.NewJWKClient(auth0.JWKClientOptions{URI: JWKS_URI}, nil)
 	aud := os.Getenv("AUTH0_AUDIENCE")
 	audience := []string{aud}
 	configuration := auth0.NewConfiguration(client, audience, AUTH0_API_ISSUER, jose.RS256)
-	validator := auth0.NewValidator(configuration)
+	validator := auth0.NewValidator(configuration, nil)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -53,7 +53,11 @@ func CheckJwt(h http.Handler) http.Handler {
 				w.WriteHeader(http.StatusUnauthorized)
 				json.NewEncoder(w).Encode(response)
 			} else {
-				ctx := context.WithValue(r.Context(), "roles", claims[os.Getenv("AUTH0_AUDIENCE")+"/roles"])
+				roles := claims[os.Getenv("AUTH0_AUDIENCE")+"/roles"]
+				if roles == nil {
+					roles = ""
+				}
+				ctx := context.WithValue(r.Context(), "roles", roles)
 				ctx = context.WithValue(ctx, "scopes", claims["scope"])
 				h.ServeHTTP(w, r.WithContext(ctx))
 			}

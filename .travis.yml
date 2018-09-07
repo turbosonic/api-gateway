@@ -13,7 +13,7 @@ notifications:
 
 script:
  - go test -v ./tests
- - export GOARCH=386
+ - export GOARCH=amd64
  - go build -o main.exe app.go
  - docker build -t turbosonic/api-gateway .
 
