@@ -10,11 +10,7 @@ import (
 
 func AddHeaders(h http.Handler) http.Handler {
 	addH := func(w http.ResponseWriter, r *http.Request) {
-		u, err := uuid.NewV4()
-		if err != nil {
-			fmt.Printf("Something went wrong: %s", err)
-			return
-		}
+		u := uuid.NewV4()
 
 		r.Header.Add("request_id", fmt.Sprint(u))
 

@@ -12,10 +12,8 @@ notifications:
   slack: wdgenterprises:uc36CCmzfnKQWhpvfE1pytCI
 
 script:
- - go test -v ./tests
- - export GOARCH=amd64
- - go build -o main.exe app.go
- - docker build -t turbosonic/api-gateway .
+ - make test
+ - make build
 
 after_success:
   - if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST != "false" ]]; then
