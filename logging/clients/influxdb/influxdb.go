@@ -91,6 +91,7 @@ func (influxdb influxdbLogger) LogRelay(l *logging.RelayLog, index string, logTy
 	tags := map[string]string{
 		"RequestID":  l.RequestID,
 		"URL":        l.URL,
+		"Host":       l.Host,
 		"Method":     l.Method,
 		"StatusCode": strconv.FormatInt(int64(l.StatusCode), 10),
 	}
