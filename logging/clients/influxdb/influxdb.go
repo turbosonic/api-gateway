@@ -74,6 +74,7 @@ func (influxdb influxdbLogger) LogRequest(l *logging.RequestLog, index string, l
 		"Agent":         l.Agent,
 		"OS":            l.OS,
 		"GoVersion":     l.GoVersion,
+		"TrafficType":   l.TrafficType,
 	}
 	fields := map[string]interface{}{
 		"duration": l.Duration,
@@ -89,11 +90,12 @@ func (influxdb influxdbLogger) LogRequest(l *logging.RequestLog, index string, l
 
 func (influxdb influxdbLogger) LogRelay(l *logging.RelayLog, index string, logType string) {
 	tags := map[string]string{
-		"RequestID":  l.RequestID,
-		"URL":        l.URL,
-		"Host":       l.Host,
-		"Method":     l.Method,
-		"StatusCode": strconv.FormatInt(int64(l.StatusCode), 10),
+		"RequestID":   l.RequestID,
+		"URL":         l.URL,
+		"Host":        l.Host,
+		"Method":      l.Method,
+		"StatusCode":  strconv.FormatInt(int64(l.StatusCode), 10),
+		"TrafficType": l.TrafficType,
 	}
 	fields := map[string]interface{}{
 		"duration": l.Duration,

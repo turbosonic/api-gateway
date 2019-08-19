@@ -31,16 +31,18 @@ type RequestLog struct {
 	Agent         string    `json:"user-agent"`
 	OS            string    `json:"os"`
 	GoVersion     string    `json:"go-version"`
+	TrafficType   string    `json:"synthetic"`
 }
 
 type RelayLog struct {
-	Date       time.Time `json:"date"`
-	RequestID  string    `json:"request_id"`
-	Host       string    `json:"host"`
-	URL        string    `json:"url"`
-	Method     string    `json:"method"`
-	StatusCode int       `json:"status"`
-	Duration   float64   `json:"duration"`
+	Date        time.Time `json:"date"`
+	RequestID   string    `json:"request_id"`
+	Host        string    `json:"host"`
+	URL         string    `json:"url"`
+	Method      string    `json:"method"`
+	StatusCode  int       `json:"status"`
+	Duration    float64   `json:"duration"`
+	TrafficType string    `json:"synthetic"`
 }
 
 type loggingResponseWriter struct {
@@ -61,6 +63,12 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 		h.ServeHTTP(lrw, r)
 
 		go func() {
+
+			trafficType := "live"
+			if r.Header.Get("traffic-type") == "synthetic" {
+				trafficType = "synthetic"
+			}
+
 			l := RequestLog{
 				start,
 				r.Header.Get("request_id"),
@@ -75,7 +83,9 @@ func (lh LogHandler) LogHandlerFunc(h http.Handler) http.Handler {
 				r.RemoteAddr,
 				r.Header.Get("User-Agent"),
 				runtime.GOOS,
-				runtime.Version()}
+				runtime.Version(),
+				trafficType,
+			}
 
 			index := os.Getenv("LOGGING_EXTERNAL_REQUEST_INDEX_NAME")
 

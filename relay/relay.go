@@ -12,7 +12,7 @@ import (
 
 var (
 	// a list of headers which will be stripped from target responses before being sent to the client
-	nonProxyHeaders = [...]string{"Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers"}
+	nonProxyHeaders = [...]string{"Access-Control-Allow-Methods", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Hostname"}
 )
 
 type Relay struct {
@@ -49,15 +49,24 @@ func (relay Relay) MakeRequest(r RelayRequest) (resp *http.Response, err error) 
 		return nil, err
 	}
 
+	hostname := resp.Header.Get("Hostname")
+
 	go func() {
+		trafficType := "live"
+		if r.Header.Get("traffic-type") == "synthetic" {
+			trafficType = "synthetic"
+		}
+
 		rl := logging.RelayLog{
-			start,
-			r.Header.Get("request_id"),
-			r.Host,
-			strings.Replace(r.URL, r.Host, "", 1),
-			r.Method,
-			resp.StatusCode,
-			float64(time.Since(start)) / float64(time.Millisecond)}
+			Date:        start,
+			RequestID:   r.Header.Get("request_id"),
+			Host:        hostname,
+			URL:         strings.Replace(r.URL, r.Host, "", 1),
+			Method:      r.Method,
+			StatusCode:  resp.StatusCode,
+			Duration:    float64(time.Since(start)) / float64(time.Millisecond),
+			TrafficType: trafficType,
+		}
 
 		index := os.Getenv("LOGGING_INTERNAL_REQUEST_INDEX_NAME")
 
