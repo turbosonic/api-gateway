@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 func AddHeaders(h http.Handler) http.Handler {
@@ -35,8 +35,8 @@ func CorsHandler(h http.Handler) http.Handler {
 		}
 		w.Header().Set("Access-Control-Max-Age", acma)
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "authorization, content-type, origin, accept")
-
+		w.Header().Set("Access-Control-Allow-Headers", "authorization, content-type, origin, accept, traffic-type")
+		w.Header().Del("Hostname")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
 		} else {
