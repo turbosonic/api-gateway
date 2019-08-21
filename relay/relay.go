@@ -57,6 +57,10 @@ func (relay Relay) MakeRequest(r RelayRequest) (resp *http.Response, err error) 
 			trafficType = "synthetic"
 		}
 
+		if hostname == "" {
+			hostname = r.Host
+		}
+
 		rl := logging.RelayLog{
 			Date:        start,
 			RequestID:   r.Header.Get("request_id"),
