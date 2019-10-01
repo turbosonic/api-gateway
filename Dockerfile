@@ -1,4 +1,4 @@
-FROM golang:1.11.13 AS build-env
+FROM golang:1.13 AS build-env
 WORKDIR /go/src/github.com/turbosonic/api-gateway
 ADD . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o app.exe app.go
